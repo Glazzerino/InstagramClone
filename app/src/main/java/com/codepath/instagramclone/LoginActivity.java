@@ -20,6 +20,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText etPassword;
     EditText etUsername;
     Button btnLogin;
+    Button btnSignUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,10 +29,10 @@ public class LoginActivity extends AppCompatActivity {
 
         if (ParseUser.getCurrentUser() != null)
             gotToMainActivity();
-        etPassword = findViewById(R.id.etPassword);
-        etUsername = findViewById(R.id.etUsername);
+        etPassword = findViewById(R.id.etPasswordSignup);
+        etUsername = findViewById(R.id.etUsernameSignup);
         btnLogin = findViewById(R.id.btnLogin);
-
+        btnSignUp = findViewById(R.id.btnCreateAccount);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,9 +40,16 @@ public class LoginActivity extends AppCompatActivity {
                 login(etUsername.getText().toString(), etPassword.getText().toString());
             }
         });
+
+        btnSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToSignUp();
+            }
+        });
     }
 
-    private void login(String username, String password) {
+    public void login(String username, String password) {
         Log.d(TAG, username + " logged in");
         ParseUser.logInInBackground(username, password, new LogInCallback() {
             @Override
@@ -56,7 +64,10 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
+    private void goToSignUp() {
+        Intent intent = new Intent(this, SignUpActivity.class);
+        startActivity(intent);
+    }
     private void gotToMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
