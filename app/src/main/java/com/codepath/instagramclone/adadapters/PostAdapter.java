@@ -1,6 +1,7 @@
 package com.codepath.instagramclone.adadapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.Viewholder> {
         TextView tvDescription;
         ImageView ivImage;
         ImageButton btnHeart;
+
         public Viewholder(@NonNull @NotNull View itemView) {
             super(itemView);
             tvUsername = itemView.findViewById(R.id.tvUsername);
@@ -73,7 +75,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.Viewholder> {
                         .load(imageFile.getUrl())
                         .into(ivImage);
             }
-
+            Log.d("Viewholder", "Bind!");
         }
     }
 }

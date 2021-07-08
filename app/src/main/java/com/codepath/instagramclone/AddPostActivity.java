@@ -1,5 +1,6 @@
 package com.codepath.instagramclone;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
@@ -64,14 +65,13 @@ public class AddPostActivity extends AppCompatActivity {
                 //TODO: Add camera selection for selfies
                 .requireLensFacing(CameraSelector.LENS_FACING_BACK)
                 .build();
-
         photoUri = "";
         //Camera setup + Listener
         cameraProviderFuture = ProcessCameraProvider.getInstance(this);
         //Offload process to a new thread managed by the ListenableFuture class
         imageCapture = new ImageCapture.Builder()
                 .setTargetRotation(this.getDisplay().getRotation())
-                .setTargetResolution(new Size(1280, 720))
+                .setTargetResolution(new Size(720, 720))
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                 .build();
         cameraProviderFuture.addListener(() -> {
@@ -83,8 +83,6 @@ public class AddPostActivity extends AppCompatActivity {
                 Log.e(TAG, "Error during CameraX bind to preview: " + e.toString());
             }
         }, ContextCompat.getMainExecutor(this));
-
-
 
         btnShutter.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -170,7 +168,10 @@ public class AddPostActivity extends AppCompatActivity {
                     Log.d(TAG, "Post submitted!");
                     Toast.makeText(AddPostActivity.this, "Post subitted!", Toast.LENGTH_SHORT).show();
                     etDesc.setText("");
-                    //TODO: Pass on the new post with intents
+                    // Setup return data for main activity
+                    Intent data = new Intent();
+                    data.putExtra("post", post);
+                    setResult(MainActivity.POST_ACTIVITY_CODE, data);
                     finish();
                 }
             }
