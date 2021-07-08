@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Size;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
@@ -70,6 +71,7 @@ public class AddPostActivity extends AppCompatActivity {
         //Offload process to a new thread managed by the ListenableFuture class
         imageCapture = new ImageCapture.Builder()
                 .setTargetRotation(this.getDisplay().getRotation())
+                .setTargetResolution(new Size(1280, 720))
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                 .build();
         cameraProviderFuture.addListener(() -> {
@@ -124,8 +126,10 @@ public class AddPostActivity extends AppCompatActivity {
                 }
 
                 ParseUser user = ParseUser.getCurrentUser();
+
                 File photo = new File(photoUri);
                 ParseFile photoParseFile = new ParseFile(photo);
+                //Wait until the parsefile is done saving. Otherwise it might be null by the time we tried uploading
                 photoParseFile.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
@@ -164,13 +168,12 @@ public class AddPostActivity extends AppCompatActivity {
                     Toast.makeText(AddPostActivity.this, "Error submitting post",Toast.LENGTH_SHORT).show();
                 } else {
                     Log.d(TAG, "Post submitted!");
+                    Toast.makeText(AddPostActivity.this, "Post subitted!", Toast.LENGTH_SHORT).show();
                     etDesc.setText("");
+                    //TODO: Pass on the new post with intents
+                    finish();
                 }
             }
         });
-    }
-
-    String getFilePath() {
-        return getFilesDir() + "/" + photoUri;
     }
 }

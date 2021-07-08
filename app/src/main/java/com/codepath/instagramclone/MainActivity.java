@@ -11,7 +11,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.codepath.instagramclone.adadapters.PostAdapter;
 import com.codepath.instagramclone.models.Post;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -25,6 +27,10 @@ public class MainActivity extends AppCompatActivity {
     ImageButton btnLogout;
     ImageView ivTitle;
     ImageButton btnAdd;
+    RecyclerView rvFeed;
+    PostAdapter adapter;
+    public List<Post> posts;
+
     public static final String TAG = "MainActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
         btnLogout = findViewById(R.id.btnLogout);
         ivTitle = findViewById(R.id.ivTitle);
         btnAdd = findViewById(R.id.btnAdd);
-
+        rvFeed = findViewById(R.id.rvFeed);
+        adapter = new PostAdapter(this, posts);
         //set custom toolbar
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
