@@ -1,6 +1,7 @@
 package com.codepath.instagramclone;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,6 +27,7 @@ import androidx.lifecycle.LifecycleOwner;
 import com.codepath.instagramclone.models.Post;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -86,21 +88,26 @@ public class AddPostActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     //Declare filename as current time in seconds and .jpg in current directory
-                    photoUri = String.valueOf(new Date().getTime() / 1000) + ".jpg";
+                    photoUri =  getFilesDir() + "/" + String.valueOf(new Date().getTime() / 1000) + ".jpg";
                     ImageCapture.OutputFileOptions outputFileOptions =
-                            new ImageCapture.OutputFileOptions.Builder(new File(getFilesDir()
-                                    ,photoUri)).build();
+                            new ImageCapture.OutputFileOptions.Builder(new File(photoUri)).build();
 
                     imageCapture.takePicture(outputFileOptions, ContextCompat.getMainExecutor(AddPostActivity.this),
                             new ImageCapture.OnImageSavedCallback() {
                                 @Override
                                 public void onImageSaved(ImageCapture.OutputFileResults outputFileResults) {
-                                    // insert your code here.
-                                    Log.d(TAG, "image saved: " + getFilesDir()+photoUri);
+                                    //Freeze preview so it shows the taken image
+                                    try {
+                                        cameraProviderFuture.get().unbindAll();
+                                    } catch (ExecutionException | InterruptedException e) {
+                                        e.printStackTrace();
+                                        Log.e(TAG, "Could not unbind camera provider from pvPreviewView: " + e.toString());
+                                    }
+                                    Log.d(TAG, "image saved: " + photoUri);
                                 }
                                 @Override
                                 public void onError(ImageCaptureException error) {
-                                    // insert your code here.
+                                    Log.e(TAG, "Failed to save capture image: " + error.toString());
                                 }
                             }
                     );
@@ -117,7 +124,14 @@ public class AddPostActivity extends AppCompatActivity {
                 }
 
                 ParseUser user = ParseUser.getCurrentUser();
-                savePost(description, user);
+                File photo = new File(photoUri);
+                ParseFile photoParseFile = new ParseFile(photo);
+                photoParseFile.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        savePost(description, user, photoParseFile);
+                    }
+                });
             }
         });
     }
@@ -134,11 +148,13 @@ public class AddPostActivity extends AppCompatActivity {
         Camera camera = cameraProvider.bindToLifecycle((LifecycleOwner)this, cameraSelector, imageCapture, preview);
     }
 
-    private void savePost(String description, ParseUser user) {
+    private void savePost(String description, ParseUser user, ParseFile photo) {
         // Create new post object
         Post post = new Post();
         post.setDescription(description);
         post.setUser(user);
+
+        post.setImage(photo);
 
         post.saveInBackground(new SaveCallback() {
             @Override
@@ -146,10 +162,15 @@ public class AddPostActivity extends AppCompatActivity {
                 if (e != null) {
                     Log.e(TAG, "Error submitting post: " + e.toString());
                     Toast.makeText(AddPostActivity.this, "Error submitting post",Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.d(TAG, "Post submitted!");
+                    etDesc.setText("");
                 }
-                Log.d(TAG, "Post submitted!");
-                etDesc.setText("");
             }
         });
+    }
+
+    String getFilePath() {
+        return getFilesDir() + "/" + photoUri;
     }
 }
