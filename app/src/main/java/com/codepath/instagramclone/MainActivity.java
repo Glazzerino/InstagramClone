@@ -23,6 +23,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.codepath.instagramclone.adadapters.PostAdapter;
 import com.codepath.instagramclone.models.Post;
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     ImageButton btnAdd;
     RecyclerView rvFeed;
     PostAdapter adapter;
-    public List<Post> posts;
+    SwipeRefreshLayout swipeLayout;
     public static final int POST_ACTIVITY_CODE = 1337;
     public static final String TAG = "MainActivity";
     @Override
@@ -54,11 +55,11 @@ public class MainActivity extends AppCompatActivity {
         btnLogout = findViewById(R.id.btnLogout);
         ivTitle = findViewById(R.id.ivTitle);
         btnAdd = findViewById(R.id.btnAdd);
-        posts = new ArrayList<>();
+        swipeLayout = findViewById(R.id.swipeLayout);
 
         //Recyclerview setup
         rvFeed = findViewById(R.id.rvFeed);
-        adapter = new PostAdapter(this, posts);
+        adapter = new PostAdapter(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvFeed.setLayoutManager(linearLayoutManager);
         rvFeed.setAdapter(adapter);
@@ -82,6 +83,15 @@ public class MainActivity extends AppCompatActivity {
                 goToAddPostActivity();
             }
         });
+
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapter.clear();
+                loadPosts(true);
+            }
+        });
+
         loadPosts(true);
     }
 
@@ -97,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
     query.setLimit(20);
     //Set sorting criteria
     query.addDescendingOrder("createdAt");
+    swipeLayout.setRefreshing(true);
     query.findInBackground(new FindCallback<Post>() {
         @Override
         public void done(List<Post> objects, ParseException e) {
@@ -105,14 +116,14 @@ public class MainActivity extends AppCompatActivity {
                 return;
             } else {
                 //Success
-                posts.addAll(objects);
+                adapter.getPosts().addAll(objects);
                 adapter.notifyDataSetChanged();
                 for (Post post : objects) {
                     Log.d(TAG,String.format("Post by %s reads: %s",
                             post.getUser().getUsername(),
                             post.getDescription()));
                 }
-
+                swipeLayout.setRefreshing(false);
             }
         }
     });
@@ -124,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == POST_ACTIVITY_CODE) {
             Log.d(TAG, "AddPostActivity success!");
             Post newPost = data.getExtras().getParcelable("post");
-            posts.add(0, newPost);
+            adapter.getPosts().add(0, newPost);
             adapter.notifyItemInserted(0);
             rvFeed.scrollToPosition(0);
         }

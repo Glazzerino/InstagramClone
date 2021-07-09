@@ -65,13 +65,24 @@
             tools:layout_editor_absoluteY="602dp" />
     </androidx.appcompat.widget.Toolbar>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvFeed"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/toolbarBottom"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:layout_editor_absoluteX="82dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvFeed"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/toolbarBottom"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            tools:layout_editor_absoluteX="82dp" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
