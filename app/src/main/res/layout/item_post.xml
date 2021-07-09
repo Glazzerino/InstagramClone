@@ -60,4 +60,15 @@
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/ufi_heart_icon"
         tools:layout_marginTop="20dp" />
+
+    <TextView
+        android:id="@+id/tvLikes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/btnHeart"
+        android:layout_marginStart="21dp"
+        android:layout_marginBottom="0dp"
+        android:layout_toEndOf="@+id/btnHeart"
+        android:text="TextView"
+        android:textSize="16sp" />
 </RelativeLayout>

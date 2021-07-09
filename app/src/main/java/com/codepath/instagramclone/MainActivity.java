@@ -1,26 +1,16 @@
 package com.codepath.instagramclone;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
-
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import androidx.appcompat.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,6 +18,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.codepath.instagramclone.adadapters.PostAdapter;
 import com.codepath.instagramclone.models.Post;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -35,11 +26,12 @@ import com.parse.ParseUser;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    Toolbar toolbar;
+
+    private BottomNavigationView bottomMenu;
+
     ImageButton btnLogout;
     ImageView ivTitle;
     ImageButton btnAdd;
@@ -57,12 +49,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity_main);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
         btnLogout = findViewById(R.id.btnLogout);
         ivTitle = findViewById(R.id.ivTitle);
-        btnAdd = findViewById(R.id.btnAdd);
         swipeLayout = findViewById(R.id.swipeLayout);
+        
+        bottomMenu = findViewById(R.id.bottomMenu);
 
         //Recyclerview setup
         rvFeed = findViewById(R.id.rvFeed);
@@ -72,9 +66,6 @@ public class MainActivity extends AppCompatActivity {
         rvFeed.setAdapter(adapter);
         rvFeed.addItemDecoration(new DividerItemDecoration(rvFeed.getContext(), DividerItemDecoration.VERTICAL));
 
-        //set custom toolbar
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,12 +74,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btnAdd.setOnClickListener(new View.OnClickListener() {
+        bottomMenu.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                //Go to post composing activity
-                goToAddPostActivity();
+            public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.item_home:
+                        break;
+                    case R.id.item_create:
+                        break;
+                }
+                return true;
             }
+
         });
 
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -96,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
             public void onRefresh() {
                 adapter.clear();
                 loadPosts(true);
+                scrollListener.resetState();
             }
         });
         // Set up endless pagination
@@ -117,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
     private void loadPosts(boolean isInitialLoad) {
     ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
     query.include(Post.KEY_USER);
-    query.setLimit(5);
+    query.setLimit(20);
     //Set sorting criteria
     query.addDescendingOrder("createdAt");
 

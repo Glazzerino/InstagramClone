@@ -27,6 +27,13 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
+
+ext {
+    appCompatVersion = '1.0.0'
+    designSupportVersion = '1.0.0'
+    recyclerViewVersion = '1.0.0'
+}
+
 apply plugin: 'com.android.application'
 dependencies {
 
@@ -58,5 +65,7 @@ dependencies {
     implementation "androidx.fragment:fragment:$fragment_version"
     // Kotlin
     implementation "androidx.fragment:fragment-ktx:$fragment_version"
+    implementation "androidx.appcompat:appcompat:${appCompatVersion}"
+    implementation "com.google.android.material:material:${designSupportVersion}"
 
 }

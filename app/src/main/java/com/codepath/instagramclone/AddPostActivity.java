@@ -1,9 +1,6 @@
 package com.codepath.instagramclone;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Size;
@@ -18,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.Camera;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
-import androidx.camera.core.ImageCapture.OnImageCapturedCallback;
 import androidx.camera.core.ImageCaptureException;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
@@ -36,7 +32,6 @@ import com.parse.SaveCallback;
 import java.io.File;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 
 public class AddPostActivity extends AppCompatActivity {
 
@@ -79,7 +74,7 @@ public class AddPostActivity extends AppCompatActivity {
                 ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
                 bindToPreview(cameraProvider);
             } catch (ExecutionException | InterruptedException e) {
-                //this isnt supposed to ever happen
+                //this isn't supposed to ever happen
                 Log.e(TAG, "Error during CameraX bind to preview: " + e.toString());
             }
         }, ContextCompat.getMainExecutor(this));
