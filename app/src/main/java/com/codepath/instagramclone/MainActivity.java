@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -45,6 +46,12 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView rvFeed;
     PostAdapter adapter;
     SwipeRefreshLayout swipeLayout;
+
+    //Stores oldest post in memory
+    Post oldestPost;
+
+    private EndlessRecyclerViewScrollListener scrollListener;
+
     public static final int POST_ACTIVITY_CODE = 1337;
     public static final String TAG = "MainActivity";
     @Override
@@ -91,23 +98,41 @@ public class MainActivity extends AppCompatActivity {
                 loadPosts(true);
             }
         });
-
+        // Set up endless pagination
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                loadPosts(false);
+            }
+        };
+        rvFeed.addOnScrollListener(scrollListener);
         loadPosts(true);
     }
 
     private void goToAddPostActivity() {
         Intent intent = new Intent(MainActivity.this, AddPostActivity.class);
         startActivityForResult(intent, POST_ACTIVITY_CODE);
-
     }
 
     private void loadPosts(boolean isInitialLoad) {
     ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
     query.include(Post.KEY_USER);
-    query.setLimit(20);
+    query.setLimit(5);
     //Set sorting criteria
     query.addDescendingOrder("createdAt");
-    swipeLayout.setRefreshing(true);
+
+    if (!isInitialLoad) {
+        if (oldestPost != null) {
+            query.whereLessThan("createdAt", oldestPost.getCreatedAt());
+        } else {
+          Log.e(TAG, "Error: tried to paginate older posts than null");
+        }
+    } else {
+        // Signal a process if it is the initial load since infinite pagination should
+        // not require the user to wait
+        swipeLayout.setRefreshing(true);
+    }
+
     query.findInBackground(new FindCallback<Post>() {
         @Override
         public void done(List<Post> objects, ParseException e) {
@@ -117,17 +142,21 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 //Success
                 adapter.getPosts().addAll(objects);
-                adapter.notifyDataSetChanged();
-                for (Post post : objects) {
-                    Log.d(TAG,String.format("Post by %s reads: %s",
-                            post.getUser().getUsername(),
-                            post.getDescription()));
+                if (isInitialLoad) {
+                    adapter.notifyDataSetChanged();
+                } else {
+                    //If we are loading for infinite pagination purposes
+                    int size = adapter.getPosts().size();
+                    adapter.notifyItemRangeChanged(size - objects.size() - 1, objects.size());
                 }
                 swipeLayout.setRefreshing(false);
+                // Record oldest post
+                oldestPost = adapter.getPosts().get(adapter.getPosts().size() - 1);
             }
         }
     });
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {

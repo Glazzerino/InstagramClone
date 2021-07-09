@@ -62,11 +62,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.Viewholder> {
                 if (holder.ivImage.getDrawable() != null) {
                     AppCompatActivity parent = (AppCompatActivity) context;
                     FragmentManager fm = parent.getSupportFragmentManager();
-                    //Get image bitmap directly from the already-loaded image view since doing otherwise
-                    //would force the fragment code to fetch the image if it was not taken on the device
-                    Drawable drawable = holder.ivImage.getDrawable();
-                    Bitmap imageBitmap = ((BitmapDrawable) drawable).getBitmap();
-                    PostDetailsFragment fragment = PostDetailsFragment.newInstance(post, imageBitmap);
+
+                    PostDetailsFragment fragment = PostDetailsFragment.newInstance(post);
                     fragment.show(fm, "post_details");
                 } else {
                     Toast.makeText(context, "Please wait until image loads", Toast.LENGTH_SHORT).show();

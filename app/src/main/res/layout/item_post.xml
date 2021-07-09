@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/ivImage"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/tvUsername"
         android:layout_centerHorizontal="true"
         android:maxWidth="350dp"
@@ -36,6 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@id/ivImage"
         android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="6dp"
         android:layout_marginBottom="0dp"
         android:text="TextView"
