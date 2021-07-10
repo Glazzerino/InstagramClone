@@ -61,7 +61,7 @@ public class SignUpActivity extends AppCompatActivity {
                     //TODO: make signup auto-login
                     finish();
                 } else {
-                    Log.e("SignUpActivity", "Error creating new user on Parser");
+                    Log.e("SignUpActivity", "Error creating new user on Parser: "+ e.toString()) ;
                 }
             }
         });

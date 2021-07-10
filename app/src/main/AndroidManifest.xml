@@ -14,7 +14,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_insta"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_insta"
         android:supportsRtl="true"
         android:theme="@style/Theme.InstagramClone">
         <activity android:name=".AddPostActivity"></activity>
