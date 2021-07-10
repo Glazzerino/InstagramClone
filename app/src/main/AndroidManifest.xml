@@ -17,7 +17,6 @@
         android:roundIcon="@mipmap/ic_insta"
         android:supportsRtl="true"
         android:theme="@style/Theme.InstagramClone">
-        <activity android:name=".AddPostActivity"></activity>
         <activity android:name=".SignUpActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>

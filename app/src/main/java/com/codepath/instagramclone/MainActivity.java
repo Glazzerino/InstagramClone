@@ -1,36 +1,23 @@
 package com.codepath.instagramclone;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.codepath.instagramclone.adadapters.PostAdapter;
+import com.codepath.instagramclone.fragments.ComposeFragment;
 import com.codepath.instagramclone.fragments.HomeFragment;
-import com.codepath.instagramclone.models.Post;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 

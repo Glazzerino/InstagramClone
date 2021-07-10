@@ -1,4 +1,4 @@
-package com.codepath.instagramclone;
+package com.codepath.instagramclone.fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +26,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 
+import com.codepath.instagramclone.R;
 import com.codepath.instagramclone.models.Post;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.parse.ParseException;
@@ -190,7 +191,7 @@ public class ComposeFragment extends Fragment {
                     Toast.makeText(getContext(), "Error submitting post",Toast.LENGTH_SHORT).show();
                 } else {
                     Log.d(TAG, "Post submitted!");
-                    Toast.makeText(getContext(), "Post subitted!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Post submitted!", Toast.LENGTH_SHORT).show();
                     etDesc.setText("");
                     // Setup return data for main activity
                     Intent data = new Intent();

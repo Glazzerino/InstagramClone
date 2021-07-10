@@ -1,10 +1,6 @@
 package com.codepath.instagramclone.adadapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.bumptech.glide.Glide;
 import com.codepath.instagramclone.R;
@@ -36,7 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.Viewholder> {
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     List<Post> posts;
     Context context;
@@ -49,13 +44,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.Viewholder> {
     @NonNull
     @NotNull
     @Override
-    public Viewholder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
+    public PostAdapter.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         View item = LayoutInflater.from(context).inflate(R.layout.item_post, parent, false);
-        return new Viewholder(item);
+        return new ViewHolder(item);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull @NotNull PostAdapter.Viewholder holder, int position) {
+    public void onBindViewHolder(@NonNull @NotNull PostAdapter.ViewHolder holder, int position) {
         Post post = posts.get(position);
         holder.bind(post);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -89,7 +84,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.Viewholder> {
         notifyDataSetChanged();
     }
 
-    public class Viewholder extends ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvUsername;
         TextView tvDescription;
         ImageView ivImage;
@@ -97,7 +92,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.Viewholder> {
         TextView tvLikes;
         public int likes;
         boolean liked;
-        public Viewholder(@NonNull @NotNull View itemView) {
+        public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             tvUsername = itemView.findViewById(R.id.tvUsername);
             tvDescription = itemView.findViewById(R.id.tvDescription);
@@ -127,7 +122,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.Viewholder> {
                         .load(imageFile.getUrl())
                         .into(ivImage);
             }
-            Log.d("Viewholder", "Bind!");
+            Log.d("ViewHolder", "Bind!");
             btnHeart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
